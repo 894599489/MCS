@@ -64,7 +64,12 @@ public:
         QRegExp re("(.+):(.+)");
         while (!file.atEnd())
         {
-            QByteArray line = file.readLine().trimmed();
+            QString line = file.readLine().trimmed();
+            int pos = line.indexOf('#');
+            if (pos != -1)
+            {
+                line.truncate(pos);
+            }
             if (re.exactMatch(line))
             {
                 kv[re.cap(1).trimmed()] = re.cap(2).trimmed();
