@@ -1,4 +1,4 @@
-#include "MCSPluginFramework.h"
+﻿#include "MCSPluginFramework.h"
 
 #include <QPluginLoader>
 #include <QFileInfo>
@@ -86,7 +86,11 @@ public:
             requireList.erase(std::remove(requireList.begin(), requireList.end(), ""), requireList.end());
         }
 
+#if QT_DEPRECATED_SINCE(5, 14) && QT_VERSION < QT_VERSION_CHECK(6,0,0)
+        pluginManifests.append({info.absoluteFilePath(), symbolicName, QSet<QString>(requireList.begin(), requireList.end())});
+#else
         pluginManifests.append({info.absoluteFilePath(), symbolicName, requireList.toSet()});
+#endif
         return true;
     }
 
@@ -139,6 +143,10 @@ public:
         }
     }
 
+    inline MCSPluginContext *getContext() const
+    {
+        return context;
+    }
 private:
     QMap<QString, QSet<QString>> getRequireMap() const
     {
@@ -185,7 +193,13 @@ private:
         int value = 0;
         forever
         {
+
+#if QT_DEPRECATED_SINCE(5, 14) && QT_VERSION < QT_VERSION_CHECK(6,0,0)
+            QList<QString> keys = requireMap.keys();
+            QSet<QString> leftSet(keys.begin(), keys.end());
+#else
             QSet<QString> leftSet = requireMap.keys().toSet();
+#endif
             QSet<QString> rightSet;
             for(const QSet<QString> &requireSet: requireMap.values())
             {
@@ -258,4 +272,10 @@ void MCSPluginFramework::stop()
 {
     Q_D(MCSPluginFramework);
     d->stop();
+}
+
+MCSPluginContext *MCSPluginFramework::getContext() const
+{
+    Q_D(const MCSPluginFramework);
+    return d->getContext();
 }

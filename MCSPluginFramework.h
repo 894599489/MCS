@@ -1,8 +1,9 @@
-#ifndef MCSPLUGINFRAMEWORK_H
+﻿#ifndef MCSPLUGINFRAMEWORK_H
 #define MCSPLUGINFRAMEWORK_H
 
 #include "mcs_global.h"
 
+class MCSPluginContext;
 class MCSPluginFrameworkPrivate;
 
 // 插件框架类
@@ -21,6 +22,9 @@ public:
 
     // 停止
     void stop();
+
+    // 获取上下文指针
+    MCSPluginContext *getContext() const;
 
 private:
     MCSPluginFrameworkPrivate *d_ptr;
